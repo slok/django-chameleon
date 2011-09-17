@@ -1,5 +1,29 @@
 import deploy
+from django.conf.global_settings import TEMPLATE_CONTEXT_PROCESSORS
+
+###############################
+
+
+TEMPLATE_CONTEXT_PROCESSORS += ('chameleon.context_processors.theme',)
+
 # Django settings for chameleonTest project.
+
+
+
+# If you want to change the var name in the context, set this
+CHAMELEON_CONTEXT_NAME = ''
+
+
+# The themes and their paths(the path where the structure starts). 
+# The strucutre of the theme has to be the same as the default one.
+CHAMELEON_THEMES = {
+    'green':'themes/green',
+    'black':'themes/black',
+    'blue': 'blue',
+}
+
+##############################
+
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
@@ -99,6 +123,7 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
+    'chameleon.middleware.DetectTheme',
 )
 
 ROOT_URLCONF = 'chameleonTest.urls'
@@ -117,6 +142,7 @@ INSTALLED_APPS = (
     'django.contrib.sites',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'chameleon',
     # Uncomment the next line to enable the admin:
     # 'django.contrib.admin',
     # Uncomment the next line to enable admin documentation:
