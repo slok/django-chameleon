@@ -1,8 +1,11 @@
 import settings
 import threading
 from datetime import datetime
+from django.contrib.sessions.models import Session
 
 _local_thread = threading.local()
+
+
 
 def get_site_theme(request=None):
     """
@@ -26,21 +29,52 @@ def get_site_theme(request=None):
             selected_theme = request.POST.get(theme)
         elif request.GET.get(theme): 
             selected_theme = request.GET.get(theme)
-        else:
-            pass # I'm comfortable with this pass :D
+            
+        #only call to set the cookie when we change the theme (although the method checks if the theme has change)
+        set_theme_in_cookie(request, selected_theme) 
     else:
-        #Check if there is a different name for the cookie var setted in settings
-        theme_cookie = getattr(settings, 'CHAMELEON_COOKIE_VAR', None)
-        if not theme_cookie:
-            theme_cookie = default
-        #TODO: CHECK THE SESSION COOKIE
-        if True:
-            pass
-        else:
-            selected_theme= None
+        pass
     
     return selected_theme
 
+
+
+def set_theme_in_cookie(request, theme):
+    """
+        Sets the key(variable) that we decided (or the default one) in the session
+        cookie, if there is no value, the cookie will be 'default' and means that 
+        the default theme is going to be used
+    """
+    
+    cookie_key = getattr(settings, 'CHAMELEON_COOKIE_VAR', 'theme')
+    cookie_theme = request.session.get(cookie_key)
+    
+    #If cookie does not exist (new cookie) set the cookie value to default, 
+    #otherwise check if there isn't a value in the var (this means that we haven't 
+    #request the change of theme and we need to use the previous one)
+    if not cookie_theme:
+        theme = 'default'
+    elif not theme:
+        theme = cookie_theme
+        
+    #If is the same theme don't do anything
+    if cookie_theme != theme:
+        request.session[cookie_key] = theme
+        
+        if settings.DEBUG:
+            date = datetime.today()
+            print('[' + date.strftime('%d/%b/%Y %X') + '] [CHAMELEON] Cookie setted to: ' + theme)
+
+def check_theme_in_request_cookie(request, theme):
+    """
+        checks if the cookie (request)theme value is the same as the theme arg
+        returns True if is the same
+    """
+    
+    cookie_key = getattr(settings, 'CHAMELEON_COOKIE_VAR', 'theme')
+    cookie_theme = request.session.get(cookie_key)
+    return cookie_theme == theme    
+    
 
 def set_template_in_response(response):
     """
@@ -58,6 +92,7 @@ def set_template_in_response(response):
     
     if settings.DEBUG:
         date = datetime.today()
-        print('[' + date.strftime('%d/%b/%Y %X') + '] Chameleon changed theme template')
+        print('[' + date.strftime('%d/%b/%Y %X') + '] [CHAMELEON] theme template changed to: ' + new_template)
     
     return response
+

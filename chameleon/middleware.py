@@ -13,6 +13,7 @@ class DetectTheme(object):
         
         utils.get_site_theme(request)
 
+
 class SetResponseTemplate(object):
     """
         Sets the theme if the new SimpleTemplateResponse or 
@@ -22,7 +23,9 @@ class SetResponseTemplate(object):
     """
     
     def __init__(self):
-        # If we want manual management in the templates then we don't need to use this middleware 
+        #Start the checks to stop this middleware (a.k.a don't change the theme!)
+        
+        # 1- If we want manual management in the templates then we don't need to use this middleware 
         try:
             apply_theme = getattr(settings, 'CHAMELEON_AUTOMATED')
             if not apply_theme:
@@ -30,6 +33,12 @@ class SetResponseTemplate(object):
                 
         except AttributeError: #put exact exception otherwise the MiddlewareNotUsed is catched too
             pass #we don't do anything, act like in the normal (automated) way
+        
+        #WE DON'T HAVE THE REQUEST :(
+        #if the cookie is the default theme, we don't need to use this middleware (act like the app wasn't enabled)
+        #if utils.check_theme_in_request_cookie(request, 'default'):
+        #    raise MiddlewareNotUsed()
+        
         
         #TODO: CHECK IF THERE IS THE LOADER PLACED TO DON'T USE THIS
         
