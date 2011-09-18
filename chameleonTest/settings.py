@@ -25,6 +25,7 @@ CHAMELEON_SITE_THEMES = {
     'green':'themes/green',
     'black':'themes/black',
     'blue': 'blue',
+    'red':'',
 }
 
 ##############################
