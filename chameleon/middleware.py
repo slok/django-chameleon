@@ -1,10 +1,13 @@
+import settings
 from chameleon import utils
+from django.core.exceptions import MiddlewareNotUsed
 
 class DetectTheme(object):
     """
         This middleware will detect if there is a theme var 
         in GET or POST and set the Cookie
     """
+    
     
     def process_request(self, request):
         
@@ -15,8 +18,22 @@ class SetResponseTemplate(object):
         Sets the theme if the new SimpleTemplateResponse or 
         TemplateResponse is used (new in 1.3)
         https://docs.djangoproject.com/en/1.3/ref/template-response/
-        This way is to not use a custom Loader ;)
+        This way is for not using a custom Loader ;)
     """
+    
+    def __init__(self):
+        # If we want manual management in the templates then we don't need to use this middleware 
+        try:
+            apply_theme = getattr(settings, 'CHAMELEON_AUTOMATED')
+            if not apply_theme:
+                raise MiddlewareNotUsed()
+                
+        except AttributeError: #put exact exception otherwise the MiddlewareNotUsed is catched too
+            pass #we don't do anything, act like in the normal (automated) way
+        
+        #TODO: CHECK IF THERE IS THE LOADER PLACED TO DON'T USE THIS
+        
+    
     def process_template_response(self, request, response):
         
         new_response = utils.set_template_in_response(response)

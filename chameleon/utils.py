@@ -33,7 +33,7 @@ def get_site_theme(request=None):
         theme_cookie = getattr(settings, 'CHAMELEON_COOKIE_VAR', None)
         if not theme_cookie:
             theme_cookie = default
-        #check the session cookie
+        #TODO: CHECK THE SESSION COOKIE
         if True:
             pass
         else:

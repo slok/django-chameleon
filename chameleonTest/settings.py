@@ -8,15 +8,15 @@ TEMPLATE_CONTEXT_PROCESSORS += ('chameleon.context_processors.theme',)
 
 # Django settings for chameleonTest project.
 
-#If you want to manage the theme change looking in your templates  manually 
-#with the request context var put down this flag
-CHAMELEON_AUTOMATED = True
+# [OPTIONAL] If you want to manage the theme change looking in your templates  manually 
+# with the request context var. Put down this flag
+#CHAMELEON_AUTOMATED = True
 
-# If you want to change the var name in the context, set this
-CHAMELEON_CONTEXT_VAR = ''
+# [OPTIONAL] If you want to change the var name in the context, set this
+#CHAMELEON_CONTEXT_VAR = ''
 
-# If you want to change the var name in the cookie set this
-CHAMELEON_SESSION_VAR = ''
+# [OPTIONAL] If you want to change the var name in the cookie set this
+#CHAMELEON_SESSION_VAR = ''
 
 
 # The themes and their paths(the path where the structure starts). 
