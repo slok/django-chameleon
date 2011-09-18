@@ -8,15 +8,20 @@ TEMPLATE_CONTEXT_PROCESSORS += ('chameleon.context_processors.theme',)
 
 # Django settings for chameleonTest project.
 
-
+#If you want to manage the theme change looking in your templates  manually 
+#with the request context var put down this flag
+CHAMELEON_AUTOMATED = True
 
 # If you want to change the var name in the context, set this
-CHAMELEON_CONTEXT_NAME = ''
+CHAMELEON_CONTEXT_VAR = ''
+
+# If you want to change the var name in the cookie set this
+CHAMELEON_SESSION_VAR = ''
 
 
 # The themes and their paths(the path where the structure starts). 
 # The strucutre of the theme has to be the same as the default one.
-CHAMELEON_THEMES = {
+CHAMELEON_SITE_THEMES = {
     'green':'themes/green',
     'black':'themes/black',
     'blue': 'blue',
@@ -124,6 +129,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'chameleon.middleware.DetectTheme',
+    'chameleon.middleware.SetResponseTemplate',
 )
 
 ROOT_URLCONF = 'chameleonTest.urls'
