@@ -1,3 +1,12 @@
 {% extends 'themes/black/base.html'%}
 
-{% block content %}<h1>This is the BLACK theme</h1> {% endblock content %}
+{% block content %}<h1>This is the BLACK theme</h1> 
+
+<form action="." method="POST" enctype="multipart/form-data">{% csrf_token %}
+    <p><div id="formContent">
+    {{ form.as_p }}
+    </div></p>
+    <p><input type="submit" value="Submit"/></p>
+</form>
+
+{% endblock content %}
