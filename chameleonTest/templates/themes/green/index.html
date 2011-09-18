@@ -2,11 +2,10 @@
 
 {% block content %}<h1>This is the GREEN theme</h1>
 
-<form action="." method="POST" enctype="multipart/form-data">{% csrf_token %}
+<form name="form" action="." method="POST" enctype="multipart/form-data" onChange="document.form.submit()">{% csrf_token %}
     <p><div id="formContent">
     {{ form.as_p }}
     </div></p>
-    <p><input type="submit" value="Submit"/></p>
 </form>
 
 {% endblock content %}

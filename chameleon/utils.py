@@ -22,18 +22,13 @@ def get_site_theme(request=None):
         theme = default
     
     
-    #Check if is a request (theme change), if is not then we need to know the seession theme so we look in the cookie
+    #Check if is a request
     if request:
         # Check if there is in POST or HEAD a change theme request
         if request.POST.get(theme):
             selected_theme = request.POST.get(theme)
         elif request.GET.get(theme): 
             selected_theme = request.GET.get(theme)
-            
-        #only call to set the cookie when we change the theme (although the method checks if the theme has change)
-        set_theme_in_cookie(request, selected_theme) 
-    else:
-        pass
     
     return selected_theme
 
@@ -96,7 +91,7 @@ def get_theme_path(theme):
         else:
             t_path = themes_paths[theme]
 
-        t_path += '/' #put the las slash
+        t_path += '/' #put the last slash
     else:
         if settings.DEBUG: #shhhhhh... silence
             raise ImproperlyConfigured(theme +' theme not found in CHAMELEON_SITE_THEMES')
@@ -119,7 +114,6 @@ def set_template_in_response(request, response):
     #if there is no theme or is the default one, dont do anything
     if not cookie_theme or cookie_theme != 'default':
     
-        #TODO: Implemented quikly to prove
         new_template = get_theme_path(cookie_theme) + actual_theme
         
         #set the new template to the response

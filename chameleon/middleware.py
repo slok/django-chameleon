@@ -2,6 +2,7 @@ import settings
 from chameleon import utils
 from django.core.exceptions import MiddlewareNotUsed
 
+
 class DetectTheme(object):
     """
         This middleware will detect if there is a theme var 
@@ -10,9 +11,13 @@ class DetectTheme(object):
     
     
     def process_request(self, request):
+        #get from POST and GET
+        #TODO: Get from Request context var
+        actual_theme = utils.get_site_theme(request)
+        print actual_theme
+        #set the cookie
+        utils.set_theme_in_cookie(request, actual_theme) 
         
-        utils.get_site_theme(request)
-
 
 class SetResponseTemplate(object):
     """
@@ -39,6 +44,7 @@ class SetResponseTemplate(object):
         
     
     def process_template_response(self, request, response):
+        
         
         new_response = utils.set_template_in_response(request, response)
         
