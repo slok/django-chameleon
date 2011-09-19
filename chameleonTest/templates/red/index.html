@@ -1,12 +1,4 @@
-{% extends 'red/base.html'%}
+{% extends 'base.html'%}
 
-{% block content %}<h1>This is the RED theme</h1> 
-
-<form action="." method="POST" enctype="multipart/form-data">{% csrf_token %}
-    <p><div id="formContent">
-    {{ form.as_p }}
-    </div></p>
-    <p><input type="submit" value="Submit"/></p>
-</form>
-
-{% endblock content %}
+{% block backgroundColor %}#FF0000{% endblock backgroundColor %}
+{% block fontColor %}#ffffff{% endblock fontColor %}

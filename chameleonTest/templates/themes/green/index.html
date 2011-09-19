@@ -1,11 +1,4 @@
-{% extends 'themes/green/base.html'%}
+{% extends 'base.html'%}
 
-{% block content %}<h1>This is the GREEN theme</h1>
-
-<form name="form" action="." method="POST" enctype="multipart/form-data" onChange="document.form.submit()">{% csrf_token %}
-    <p><div id="formContent">
-    {{ form.as_p }}
-    </div></p>
-</form>
-
-{% endblock content %}
+{% block backgroundColor %}#008000{% endblock backgroundColor %}
+{% block fontColor %}#ffffff{% endblock fontColor %}
