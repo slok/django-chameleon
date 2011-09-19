@@ -3,8 +3,16 @@ import threading
 from datetime import datetime
 from django.contrib.sessions.models import Session
 from django.core.exceptions import ImproperlyConfigured
+from django.template import RequestContext
+
 _local_thread = threading.local()
 
+
+def get_theme_from_cookie(request):
+    
+    cookie_key = getattr(settings, 'CHAMELEON_COOKIE_VAR', 'theme')
+    cookie_theme = request.session.get(cookie_key)
+    return cookie_theme
 
 
 def get_site_theme(request=None):
@@ -16,8 +24,8 @@ def get_site_theme(request=None):
     default = 'theme'
     selected_theme=None
     
-    #check if there is a different name for the context var setted in settings
-    theme = getattr(settings, 'CHAMELEON_CONTEXT_VAR', None)
+    #check if there is a different name for the cookie var setted in settings
+    theme = getattr(settings, 'CHAMELEON_COOKIE_VAR', None)
     if not theme:
         theme = default
     
@@ -40,9 +48,9 @@ def set_theme_in_cookie(request, theme):
         cookie, if there is no value, the cookie will be 'default' and means that 
         the default theme is going to be used
     """
-    
     cookie_key = getattr(settings, 'CHAMELEON_COOKIE_VAR', 'theme')
-    cookie_theme = request.session.get(cookie_key)
+    
+    cookie_theme = get_theme_from_cookie(request)
     
     #If cookie does not exist (new cookie) set the cookie value to default, 
     #otherwise check if there isn't a value in the var (this means that we haven't 
@@ -65,10 +73,7 @@ def check_theme_in_request_cookie(request, theme):
         checks if the cookie (request)theme value is the same as the theme arg
         returns True if is the same
     """
-    
-    cookie_key = getattr(settings, 'CHAMELEON_COOKIE_VAR', 'theme')
-    cookie_theme = request.session.get(cookie_key)
-    return cookie_theme == theme    
+    return theme == get_theme_from_cookie(request)
     
 def get_theme_path(theme):
     """
@@ -80,7 +85,7 @@ def get_theme_path(theme):
         themes_paths = getattr(settings, 'CHAMELEON_SITE_THEMES')
     except AttributeError: 
         if settings.DEBUG: #shhhhhh... silence
-            raise ImproperlyConfigured('You must specify the themes paths in CHAMELEON_SITE_THEMES in yout settings file')
+            raise ImproperlyConfigured('You must specify the themes paths in CHAMELEON_SITE_THEMES in your settings file')
         else:
             pass
    
@@ -100,6 +105,7 @@ def get_theme_path(theme):
 
     return t_path
     
+        
 def set_template_in_response(request, response):
     """
         Sets the new template to a SimpleTemplateResponse or TemplateResponse
@@ -108,8 +114,7 @@ def set_template_in_response(request, response):
     
     #get the actual template and modify to get the new path
     actual_theme = response.template_name
-    cookie_key = getattr(settings, 'CHAMELEON_COOKIE_VAR', 'theme')
-    cookie_theme = request.session.get(cookie_key)
+    cookie_theme = get_theme_from_cookie(request)
     
     #if there is no theme or is the default one, dont do anything
     if not cookie_theme or cookie_theme != 'default':
@@ -123,6 +128,21 @@ def set_template_in_response(request, response):
         if settings.DEBUG:
             date = datetime.today()
             print('[' + date.strftime('%d/%b/%Y %X') + '] [CHAMELEON] theme template changed to: ' + new_template)
-        
+    
+    set_request_context_var(request, response)    
     return response
 
+def set_request_context_var(request, response):
+    
+    context_key = getattr(settings, 'CHAMELEON_CONTEXT_VAR', 'theme')
+    
+    #create the context data and set the theme variable
+    request_context = response.resolve_context(response.context_data)
+    request_context[context_key] = get_theme_from_cookie(request)
+    
+    response.context_data = request_context
+    
+    if settings.DEBUG:
+        date = datetime.today()
+        print('[' + date.strftime('%d/%b/%Y %X') + '] [CHAMELEON] Added theme to context data')
+    

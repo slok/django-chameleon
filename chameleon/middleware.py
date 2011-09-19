@@ -14,7 +14,6 @@ class DetectTheme(object):
         #get from POST and GET
         #TODO: Get from Request context var
         actual_theme = utils.get_site_theme(request)
-        print actual_theme
         #set the cookie
         utils.set_theme_in_cookie(request, actual_theme) 
         
@@ -47,6 +46,8 @@ class SetResponseTemplate(object):
         
         
         new_response = utils.set_template_in_response(request, response)
+        
+        #TODO: Put the Context data
         
         return new_response
 
