@@ -5,6 +5,5 @@ from forms import ColorForm
 
 def index(request):
 
-    return TemplateResponse(request, 'index.html', {'form': ColorForm()})
-
     #return render_to_response('index.html', context_instance=RequestContext(request))
+    return TemplateResponse(request, 'index.html', {'form': ColorForm()})
