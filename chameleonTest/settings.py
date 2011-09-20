@@ -12,11 +12,17 @@ TEMPLATE_CONTEXT_PROCESSORS += ('chameleon.context_processors.theme',)
 # with the request context var. Put down this flag
 #CHAMELEON_AUTOMATED = True
 
+# [OPTIONAL] If you want to name the form var in a different name
+#CHAMELEON_FORM_KEY = ''
+
+# [OPTIONAL] If you want to name the default theme different to 'default'
+#CHAMELEON_DEFAULT_THEME = ''
+
 # [OPTIONAL] If you want to change the var name in the context, set this
-#CHAMELEON_CONTEXT_VAR = ''
+#CHAMELEON_CONTEXT_KEY = ''
 
 # [OPTIONAL] If you want to change the var name in the cookie set this
-#CHAMELEON_SESSION_VAR = ''
+#CHAMELEON_COOKIE_KEY = ''
 
 
 # The themes and their paths(the path where the structure starts). 
@@ -118,7 +124,7 @@ SECRET_KEY = deploy.SECRET_KEY
 
 # List of callables that know how to import templates from various sources.
 TEMPLATE_LOADERS = (
-    #'chameleon.loader.Loader',
+    'chameleon.loader.Loader',
     'django.template.loaders.filesystem.Loader',
     'django.template.loaders.app_directories.Loader',
 #     'django.template.loaders.eggs.Loader',

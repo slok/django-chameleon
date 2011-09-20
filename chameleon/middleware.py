@@ -2,7 +2,6 @@ import settings
 from chameleon import utils
 from django.core.exceptions import MiddlewareNotUsed
 
-
 class DetectTheme(object):
     """
         This middleware will detect if there is a theme var 
@@ -17,10 +16,12 @@ class DetectTheme(object):
         actual_theme = utils.get_theme_from_request(request)
         
         #set the theme in the local thread
-        utils.set_theme_in_local_thread(actual_theme)
+        #utils.set_theme_in_local_thread(actual_theme)
         
         #set the cookie
         utils.set_theme_in_cookie(request, actual_theme) 
+        
+        
         
 
 class SetResponseTemplate(object):
@@ -44,15 +45,18 @@ class SetResponseTemplate(object):
         except AttributeError: #put exact exception otherwise the MiddlewareNotUsed is catched too
             pass #we don't do anything, act like in the normal (automated) way
         
-        # TODO: CHECK IF THERE IS THE LOADER PLACED TO DON'T USE THIS
+        #if the loader is active then we don't need  this middleware
+        if 'chameleon.loader.Loader' in settings.TEMPLATE_LOADERS:
+            raise MiddlewareNotUsed()
         
     
     def process_template_response(self, request, response):
         
+        # set the Context data
+        utils.set_theme_in_context(request, response)   
         
+        # set the new template ;)
         new_response = utils.set_template_in_response(request, response)
-        
-        #TODO: Put the Context data
         
         return new_response
 
