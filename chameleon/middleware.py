@@ -11,9 +11,14 @@ class DetectTheme(object):
     
     
     def process_request(self, request):
+        utils._init_theme(request)
+        
         #get from POST and GET
-        #TODO: Get from Request context var
-        actual_theme = utils.get_site_theme(request)
+        actual_theme = utils.get_theme_from_request(request)
+        
+        #set the theme in the local thread
+        utils.set_theme_in_local_thread(actual_theme)
+        
         #set the cookie
         utils.set_theme_in_cookie(request, actual_theme) 
         

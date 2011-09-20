@@ -7,40 +7,75 @@ from django.template import RequestContext
 
 _local_thread = threading.local()
 
+#The theme stores in this different places:
+#   - Cookie (session)
+#   - Local thread
+#   - Request context
+#
+
+def _init_theme(request):
+    """
+    We need to access to some variables sometimes and we don't have so we
+    push them in the thread data (global) the vars are: request and theme.
+    with request we have enough because we have 
+    """
+    global _local_thread
+    _local_thread = threading.local()
+    _local_thread.request = request
+    _local_thread.theme = None
+
 
 def get_theme_from_cookie(request):
     
     cookie_key = getattr(settings, 'CHAMELEON_COOKIE_VAR', 'theme')
     cookie_theme = request.session.get(cookie_key)
+    
     return cookie_theme
 
 
-def get_site_theme(request=None):
+def get_theme_from_request(request):
     """
-        gets the site theme from the cooki, GET or POST
+        gets the site theme from the GET or POST request
     """
     
-    request = request or getattr(_local_thread, 'request', None)
     default = 'theme'
     selected_theme=None
     
     #check if there is a different name for the cookie var setted in settings
-    theme = getattr(settings, 'CHAMELEON_COOKIE_VAR', None)
-    if not theme:
-        theme = default
-    
+    theme_var = getattr(settings, 'CHAMELEON_COOKIE_VAR', None)
+    if not theme_var:
+        theme_var = default
     
     #Check if is a request
     if request:
         # Check if there is in POST or HEAD a change theme request
-        if request.POST.get(theme):
-            selected_theme = request.POST.get(theme)
-        elif request.GET.get(theme): 
-            selected_theme = request.GET.get(theme)
+        if request.POST.get(theme_var):
+            selected_theme = request.POST.get(theme_var)
+        elif request.GET.get(theme_var): 
+            selected_theme = request.GET.get(theme_var)
+        
     
     return selected_theme
 
+def get_theme_from_local_thread():
+    return getattr(_local_thread, 'theme')
 
+
+def set_theme_in_local_thread(theme):
+    global  _local_thread
+    
+    #If not theme then get from the cookie
+    if not theme:
+        theme = get_theme_from_cookie(_local_thread.request)
+
+    print theme
+    print _local_thread.theme
+    #if the cookie hasn't changed then don't update the theme in the thread
+    if theme != _local_thread.theme:
+        _local_thread.theme =  theme
+        if settings.DEBUG:
+            date = datetime.today()
+            print('[' + date.strftime('%d/%b/%Y %X') + '] [CHAMELEON] Local thread variable setted to: ' + theme)
 
 def set_theme_in_cookie(request, theme):
     """
@@ -68,12 +103,21 @@ def set_theme_in_cookie(request, theme):
             date = datetime.today()
             print('[' + date.strftime('%d/%b/%Y %X') + '] [CHAMELEON] Cookie setted to: ' + theme)
 
-def check_theme_in_request_cookie(request, theme):
-    """
-        checks if the cookie (request)theme value is the same as the theme arg
-        returns True if is the same
-    """
-    return theme == get_theme_from_cookie(request)
+
+def set_theme_in_context(request, response):
+    
+    context_key = getattr(settings, 'CHAMELEON_CONTEXT_VAR', 'theme')
+    
+    #create the context data and set the theme variable
+    request_context = response.resolve_context(response.context_data)
+    request_context[context_key] = get_theme_from_cookie(request)
+    
+    response.context_data = request_context
+    
+    if settings.DEBUG:
+        date = datetime.today()
+        print('[' + date.strftime('%d/%b/%Y %X') + '] [CHAMELEON] Added theme to context data')
+    
     
 def get_theme_path(theme):
     """
@@ -89,7 +133,8 @@ def get_theme_path(theme):
         else:
             pass
    
-    if theme in themes_paths :
+   #check if there is the theme, if there isn't then use the default one ;)
+    if theme in themes_paths:
         #If the path is void then use the name of the theme like root folder of the theme
         if not themes_paths[theme]:
             t_path = theme 
@@ -98,8 +143,8 @@ def get_theme_path(theme):
 
         t_path += '/' #put the last slash
     else:
-        if settings.DEBUG: #shhhhhh... silence
-            raise ImproperlyConfigured(theme +' theme not found in CHAMELEON_SITE_THEMES')
+        if settings.DEBUG and theme != 'default': #shhhhhh... silence
+            raise ImproperlyConfigured('theme not found in CHAMELEON_SITE_THEMES')
         else:
             pass
 
@@ -129,20 +174,13 @@ def set_template_in_response(request, response):
             date = datetime.today()
             print('[' + date.strftime('%d/%b/%Y %X') + '] [CHAMELEON] theme template changed to: ' + new_template)
     
-    set_request_context_var(request, response)    
+    set_theme_in_context(request, response)    
     return response
 
-def set_request_context_var(request, response):
-    
-    context_key = getattr(settings, 'CHAMELEON_CONTEXT_VAR', 'theme')
-    
-    #create the context data and set the theme variable
-    request_context = response.resolve_context(response.context_data)
-    request_context[context_key] = get_theme_from_cookie(request)
-    
-    response.context_data = request_context
-    
-    if settings.DEBUG:
-        date = datetime.today()
-        print('[' + date.strftime('%d/%b/%Y %X') + '] [CHAMELEON] Added theme to context data')
-    
+
+def check_theme_in_request_cookie(request, theme):
+    """
+        checks if the cookie (request)theme value is the same as the theme arg
+        returns True if is the same
+    """
+    return theme == get_theme_from_cookie(request)
