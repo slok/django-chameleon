@@ -45,7 +45,7 @@ class SetResponseTemplate(object):
         except AttributeError: #put exact exception otherwise the MiddlewareNotUsed is catched too
             pass #we don't do anything, act like in the normal (automated) way
         
-        #if the loader is active then we don't need  this middleware
+        #2- if the loader is active then we don't need  this middleware
         if 'chameleon.loader.Loader' in settings.TEMPLATE_LOADERS:
             raise MiddlewareNotUsed()
         
