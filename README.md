@@ -47,7 +47,7 @@ So we add other themes, **red**, **blue**, **green** and **black**. These themes
 is rendered from the view. If all the themes want to extend from the same base.html they could. Also they could extend from an individual base.html but 
 this has to be put in the template, for example in the blue one the extend from `/templates/blue/base.html` is: `{% extends 'blue/base.html' %}`  
 
-As we can see all the templates have the same structure. default is in `templates`, blue and red are in `templates/xxxx`, and grend and black are  `templates/themes/xxxx` **but always the same structure of templates**
+As we can see all the templates have the same structure. default is in `templates`, blue and red are in `templates/xxxx`, and green and black are  `templates/themes/xxxx` **but always the same structure of templates**
 
 
     Templates
@@ -75,6 +75,7 @@ As we can see all the templates have the same structure. default is in `template
 ###Settings variables###
 
 There are some vars that can be set in `settings.py`. `TEMPLATE_CONTEXT_PROCESSOR` and `CHAMELEON_SITE_THEMES` are neccesary, the others are optional. For example:
+
     from django.conf.global_settings import TEMPLATE_CONTEXT_PROCESSORS
     
     TEMPLATE_CONTEXT_PROCESSORS += ('chameleon.context_processors.theme',)
@@ -128,7 +129,7 @@ Add both middlewares to `MIDDLEWARE_CLASSES` (the second one is only for the Tem
 
 ###Select method. `loader` or `TemplateResponse`###
 
-We have to select the method to change the theme between Loader and TemplateResponse(Recommended)
+We have to select the method between Loader and TemplateResponse(Recommended)
 
 ####Loader####
 
@@ -148,7 +149,7 @@ Add our loader to settings (**the first one**) for example:
 
 
 
-####Other####
+###Other###
 
 If you want that the default option of the form (theme choice) renders the theme that currently is activated you have to use `chameleon.utils` methods like is in the example(`views.py`). The example shows how to use the app with a basic example
 
