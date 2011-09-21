@@ -3,21 +3,22 @@ from django.template import TemplateDoesNotExist
 import utils
 import settings
 
-# QUICK SOLUTION. I DON'T LIKE THIS WAY. FIX!!!!
-def module_splitter(str_module):
+def import_class_from_str(str_module):
+    """
+    Use this to import a class from a string. For example:
+    'django.template.loaders.filesystem.Loader' is converted to:
+    from django.template.loaders.filesystem import Loader
+    """
     split_module = str_module.split('.')
-    mod_length = len(split_module)
-    module = ''
-    for i in range(mod_length): #use this way to skip the last one
-        if i < mod_length-2:
-            module = module + split_module[i] + '.'
-        elif i < mod_length-1:
-            module = module + split_module[i]
-        else:
-            mod_class = split_module[i]
+    mod_class = split_module.pop()
+    module = split_module.pop(0)
+    
+    for i in split_module:
+        module = module + '.' + i
 
     mod = __import__(module, fromlist=[mod_class])
     return getattr(mod, mod_class)
+    
 
 class Loader(BaseLoader):
     is_usable = True
@@ -47,14 +48,14 @@ class Loader(BaseLoader):
         #the template when the final raise executes
         new_template_name = self.prepare_template_path(template_name)
         for loader in self.template_source_loaders:
+            class_import = import_class_from_str(loader)
+            loader_class = class_import()
             try:
-                loader_class = module_splitter(loader)
-                return loader_class().load_template(new_template_name, template_dirs)
+                return loader_class.load_template(new_template_name, template_dirs)
             except TemplateDoesNotExist:
                 #if the commons fail, use the default theme automatically
                 try:
-                    loader_class = module_splitter(loader)
-                    return loader_class().load_template(template_name, template_dirs)
+                    return loader_class.load_template(template_name, template_dirs)
                 except:
                     pass
         
@@ -66,14 +67,14 @@ class Loader(BaseLoader):
         new_template_name = self.prepare_template_path(template_name)
         for loader in self.template_source_loaders:
             if hasattr(loader, 'load_template_source'):
+                class_import = import_class_from_str(loader)
+                loader_class = class_import()
                 try:
-                    loader_class = module_splitter(loader)
-                    return loader_class().load_template_source(new_template_name, template_dirs)
+                    return loader_class.load_template_source(new_template_name, template_dirs)
                 except TemplateDoesNotExist:
                     #if the commons fail, use the default theme automatically
                     try:
-                        loader_class = module_splitter(loader)
-                        return loader_class().load_template(template_name, template_dirs)
+                        return loader_class.load_template(template_name, template_dirs)
                     except:
                         pass
                         
