@@ -30,7 +30,7 @@ class Loader(BaseLoader):
                 loaders.append(loader)
         
         self.template_source_loaders = tuple(loaders)
-        super(BaseLoader, self).__init__(*args, **kwargs)
+        #super(BaseLoader, self).__init__(*args, **kwargs)
         
 
     def prepare_template_path(self, template_name):
@@ -39,32 +39,42 @@ class Loader(BaseLoader):
         """
         actual_theme = utils.get_theme_from_cookie()
         path =  utils.get_theme_path(actual_theme) + template_name
-        print path
         return path
 
     def load_template(self, template_name, template_dirs=None):
         #we load the new template with the common loaders. If they don't return nothing the exception is captured and pass. 
         #And the last one if returns something doesn't do the raise son this way we know if none of the loaders has found 
         #the template when the final raise executes
-        template_name = self.prepare_template_path(template_name)
+        new_template_name = self.prepare_template_path(template_name)
         for loader in self.template_source_loaders:
             try:
                 loader_class = module_splitter(loader)
-                return loader_class().load_template(template_name, template_dirs)
+                return loader_class().load_template(new_template_name, template_dirs)
             except TemplateDoesNotExist:
-                pass
+                #if the commons fail, use the default theme automatically
+                try:
+                    loader_class = module_splitter(loader)
+                    return loader_class().load_template(template_name, template_dirs)
+                except:
+                    pass
+        
         raise TemplateDoesNotExist("Tried %s" % template_name)
 
         
     def load_template_source(self, template_name, template_dirs=None):
         #similar to load_template
-        print 'llamo a load temple'
-        template_name = self.prepare_template_path(template_name)
+        new_template_name = self.prepare_template_path(template_name)
         for loader in self.template_source_loaders:
             if hasattr(loader, 'load_template_source'):
                 try:
                     loader_class = module_splitter(loader)
-                    return loader_class().load_template_source(template_name, template_dirs)
+                    return loader_class().load_template_source(new_template_name, template_dirs)
                 except TemplateDoesNotExist:
-                    pass
+                    #if the commons fail, use the default theme automatically
+                    try:
+                        loader_class = module_splitter(loader)
+                        return loader_class().load_template(template_name, template_dirs)
+                    except:
+                        pass
+                        
         raise TemplateDoesNotExist("Tried %s" % template_name)

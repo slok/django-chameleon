@@ -52,8 +52,8 @@ class SetResponseTemplate(object):
     
     def process_template_response(self, request, response):
         
-        # set the Context data
-        utils.set_theme_in_context(request, response)   
+        # set the Context data. We don't need, the context_processors.py puts automatically
+        #utils.set_theme_in_context(request, response)   
         
         # set the new template ;)
         new_response = utils.set_template_in_response(request, response)
