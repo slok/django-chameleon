@@ -75,7 +75,8 @@ As we can see all the templates have the same structure. default is in `template
 ###Settings variables###
 
 There are some vars that can be set in `settings.py`. `TEMPLATE_CONTEXT_PROCESSOR` and `CHAMELEON_SITE_THEMES` are neccesary, the others are optional. For example:
-
+    from django.conf.global_settings import TEMPLATE_CONTEXT_PROCESSORS
+    
     TEMPLATE_CONTEXT_PROCESSORS += ('chameleon.context_processors.theme',)
 
     # Django settings for chameleonTest project.
@@ -106,6 +107,18 @@ There are some vars that can be set in `settings.py`. `TEMPLATE_CONTEXT_PROCESSO
         'blue': 'blue',
         'red':'',
     }
+    
+###Add chameleon to installed apps###
+In settings add chameleon to `INSTALLED_APPS`, for example: 
+    
+    INSTALLED_APPS = (
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.sites',
+    'django.contrib.messages',
+    'django.contrib.staticfiles',
+    'chameleon',
     
 ###Add middleware###
 Add both middlewares to `MIDDLEWARE_CLASSES` (the second one is only for the TemplateResponse method, but if loader is activated in `TEMPLATE_LOADERS` the SetResponseTemplate middleware disables automatically)
