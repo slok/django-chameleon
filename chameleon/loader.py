@@ -39,6 +39,15 @@ class Loader(BaseLoader):
             Prepares the template path with the cookie theme prefix and the template name
         """
         actual_theme = utils.get_theme_from_cookie()
+        
+        #cut the levels of the default theme (if necessary)
+        try:
+            cut_level = getattr(settings, 'DEFAULT_LEVEL_CUT')
+            if cut_level > 0:
+                template_name = utils.cut_theme_path_level(template_name, cut_level)
+        except AttributeError:
+            pass
+        
         path =  utils.get_theme_path(actual_theme) + template_name
         return path
 

@@ -150,7 +150,28 @@ def get_theme_path(theme):
             pass
 
     return t_path
-    
+
+def cut_theme_path_level(templatePath, level):
+    split_path = templatePath.split('/')
+    split_path.pop(0) #the first one is empty because the string starts with '/' so we removed from list
+    #if the level is equal or higher than the path then exception
+    if len(split_path) > level:
+        #remove levels
+        for i in range(level):
+            split_path.pop(0)
+        
+        #create the new path with the remain levels of the path
+        if len(split_path) == 1:
+            final_path = split_path.pop(0)
+        else:
+            final_path = ''
+            for i in split_path:
+                final_path = final_path + '/' + i
+        
+        return final_path
+         
+    elif settings.DEBUG: #shhhhhh... silence
+        raise ImproperlyConfigured('Your cut level in "DEFAULT_LEVEL_CUT" is higher or equal than the path levels')
         
 def set_template_in_response(request, response):
     """
@@ -163,10 +184,17 @@ def set_template_in_response(request, response):
     cookie_theme = get_theme_from_cookie(request)
     
     #if there is no theme or is the default one, dont do anything
-    if not cookie_theme or cookie_theme != _local_thread.keys['default_theme']:
+    if cookie_theme or cookie_theme != _local_thread.keys['default_theme']:
     
-        new_template = get_theme_path(cookie_theme) + actual_theme
+        #cut the levels of the default theme (if necessary)
+        try:
+            cut_level = getattr(settings, 'DEFAULT_LEVEL_CUT')
+            if cut_level > 0:
+                actual_theme = cut_theme_path_level(actual_theme, cut_level)
+        except AttributeError:
+            pass
         
+        new_template = get_theme_path(cookie_theme) + actual_theme
         #set the new template to the response
         response.resolve_template(new_template) # template exception if the template doesnt exist
         response.template_name = new_template

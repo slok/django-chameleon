@@ -24,6 +24,17 @@ TEMPLATE_CONTEXT_PROCESSORS += ('chameleon.context_processors.theme',)
 # [OPTIONAL] If you want to change the var name in the cookie set this
 #CHAMELEON_COOKIE_KEY = ''
 
+# [OPTIONAL] If you want to put the default theme in a subfolder where the other themes
+# aren't placed you culd say how many levels to remove from the default path (like in patch/diff ;) )
+# Example:  whith no cut level
+#           template root folder: /templates
+#           default theme: /templates/default/*.html
+#           blue theme: /templates/default/blue/*.html
+#           
+#           whith cut level 1
+#           default theme: /templates/default/*.html
+#           blue theme: /templates/blue/*.html
+#DEFAULT_LEVEL_CUT = 0
 
 # The themes and their paths(the path where the structure starts). 
 # The strucutre of the theme has to be the same as the default one.
@@ -124,7 +135,7 @@ SECRET_KEY = deploy.SECRET_KEY
 
 # List of callables that know how to import templates from various sources.
 TEMPLATE_LOADERS = (
-    'chameleon.loader.Loader',
+#    'chameleon.loader.Loader',
     'django.template.loaders.filesystem.Loader',
     'django.template.loaders.app_directories.Loader',
 #     'django.template.loaders.eggs.Loader',
