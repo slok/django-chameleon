@@ -55,7 +55,13 @@ class Loader(BaseLoader):
         #we load the new template with the common loaders. If they don't return nothing the exception is captured and pass. 
         #And the last one if returns something doesn't do the raise son this way we know if none of the loaders has found 
         #the template when the final raise executes
-        new_template_name = self.prepare_template_path(template_name)
+        
+        #check if we have automated mode 
+        if getattr(settings, 'CHAMELEON_AUTOMATED', True):
+            new_template_name = self.prepare_template_path(template_name)
+        else:
+            new_template_name = template_name
+            
         for loader in self.template_source_loaders:
             class_import = import_class_from_str(loader)
             loader_class = class_import()
@@ -73,7 +79,12 @@ class Loader(BaseLoader):
         
     def load_template_source(self, template_name, template_dirs=None):
         #similar to load_template
-        new_template_name = self.prepare_template_path(template_name)
+        #check if we have automated mode 
+        if getattr(settings, 'CHAMELEON_AUTOMATED', True):
+            new_template_name = self.prepare_template_path(template_name)
+        else:
+            new_template_name = template_name
+            
         for loader in self.template_source_loaders:
             if hasattr(loader, 'load_template_source'):
                 class_import = import_class_from_str(loader)

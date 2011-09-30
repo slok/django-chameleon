@@ -1,7 +1,7 @@
 Chameleon
 =========
 
-**documentation at: [readTheDocs](http://readthedocs.org/docs/django-chameleon/) **
+**documentation at: [readTheDocs](http://readthedocs.org/docs/django-chameleon/)**
 
 Description
 -----------
