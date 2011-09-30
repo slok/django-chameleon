@@ -158,6 +158,14 @@ TemplateResponse
 Use/installation
 ----------------
 
+Installation
+~~~~~~~~~~~~
+
+.. code-block:: bash
+
+    pip install git+git://github.com/slok/django-chameleon.git
+
+
 Settings variables
 ~~~~~~~~~~~~~~~~~~
 

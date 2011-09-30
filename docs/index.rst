@@ -35,10 +35,3 @@ and report bugs at: http://github.com/slok/django-chameleon/issues .
     utils
     changelog
     
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
-
