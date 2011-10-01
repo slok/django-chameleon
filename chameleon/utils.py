@@ -40,6 +40,9 @@ def _init_theme(request):
     
 
 def get_theme_from_cookie(request = None):
+    """
+        Gets the Theme from the session/cookie variable
+    """
 
     #if we want the theme and we don't have the request, use the local thread data
     if not request:
@@ -108,6 +111,9 @@ def set_theme_in_cookie(request, theme):
 
 
 def set_theme_in_context(request, response):
+    """
+        Sets the theme in the context variable inside the response object
+    """
     
     #create the context data and set the theme variable
     request_context = response.resolve_context(response.context_data)
@@ -152,6 +158,10 @@ def get_theme_path(theme):
     return t_path
 
 def cut_theme_path_level(templatePath, level):
+    """
+        Cuts the path level with the integer that is passed to the function. For example:
+        /f1/f2/f3/xxx with cut leve 1 is /f2/f3/xxx
+    """
     split_path = templatePath.split('/')
     split_path.pop(0) #the first one is empty because the string starts with '/' so we removed from list
     #if the level is equal or higher than the path then exception
