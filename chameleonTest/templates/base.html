@@ -9,7 +9,7 @@
 
 <h1>This is the {{theme}} theme</h1>
 
-<form name="form" action="." method="POST" enctype="multipart/form-data" onChange="document.form.submit()">{% csrf_token %}
+<form name="form" action="." method="POST" enctype="multipart/form-data">{% csrf_token %}
     <p><div id="formContent">
     {{ form.as_p }}
     </div></p>
