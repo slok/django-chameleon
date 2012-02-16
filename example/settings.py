@@ -15,30 +15,19 @@ TEMPLATE_CONTEXT_PROCESSORS += ('chameleon.context_processors.theme',)
 # [OPTIONAL] If you want to name the form var in a different name
 #CHAMELEON_FORM_KEY = ''
 
-# [OPTIONAL] If you want to name the default theme different to 'default'
-#CHAMELEON_DEFAULT_THEME = ''
-
 # [OPTIONAL] If you want to change the var name in the context, set this
 #CHAMELEON_CONTEXT_KEY = ''
 
 # [OPTIONAL] If you want to change the var name in the cookie set this
 #CHAMELEON_COOKIE_KEY = ''
 
-# [OPTIONAL] If you want to put the default theme in a subfolder where the other themes
-# aren't placed you culd say how many levels to remove from the default path (like in patch/diff ;) )
-# Example:  whith no cut level
-#           template root folder: /templates
-#           default theme: /templates/default/*.html
-#           blue theme: /templates/default/blue/*.html
-#           
-#           whith cut level 1
-#           default theme: /templates/default/*.html
-#           blue theme: /templates/blue/*.html
-#DEFAULT_LEVEL_CUT = 0
+# If you want to name the default theme different to 'default'
+CHAMELEON_DEFAULT_THEME = 'white'
 
 # The themes and their paths(the path where the structure starts). 
 # The strucutre of the theme has to be the same as the default one.
 CHAMELEON_SITE_THEMES = {
+    'white':'white',
     'green':'themes/green',
     'black':'themes/black',
     'blue': 'blue',
