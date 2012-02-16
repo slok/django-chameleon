@@ -6,7 +6,7 @@ from django.conf.global_settings import TEMPLATE_CONTEXT_PROCESSORS
 
 TEMPLATE_CONTEXT_PROCESSORS += ('chameleon.context_processors.theme',)
 
-# Django settings for chameleonTest project.
+# Django settings for example project.
 
 # [OPTIONAL] If you want to manage the theme change looking in your templates  manually 
 # with the request context var. Put down this flag
@@ -151,7 +151,7 @@ MIDDLEWARE_CLASSES = (
     'chameleon.middleware.SetResponseTemplate',
 )
 
-ROOT_URLCONF = 'chameleonTest.urls'
+ROOT_URLCONF = 'example.urls'
 
 TEMPLATE_DIRS = (
     'templates'

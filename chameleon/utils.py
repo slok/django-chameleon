@@ -38,6 +38,9 @@ def _init_theme(request):
 
     _local_thread.keys = keys
     
+    if settings.DEBUG:
+        date = datetime.today()
+        print('[' + date.strftime('%d/%b/%Y %X') + '] [CHAMELEON] Thread local variables initiated' )
 
 def get_theme_from_cookie(request = None):
     """
