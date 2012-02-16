@@ -8,6 +8,6 @@ for k, v in settings.CHAMELEON_SITE_THEMES.items():
 
 class ColorForm(forms.Form):
     theme = forms.ChoiceField( choices = choices,
-                            widget=forms.Select(),
+                            widget=forms.Select(attrs={'onchange': 'this.form.submit();'}),
                             label='Select theme color',
                             required=True)
