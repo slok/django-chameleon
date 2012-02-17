@@ -1,0 +1,70 @@
+{% extends 'bootstrap/base.html'%}
+
+{% block navmenu %}
+    <li class="active"><a href="/">Home</a></li>
+    <li><a href="/about/chameleon">About chameleon</a></li>
+    <li><a href="/about/me">About Me</a></li>
+{% endblock navmenu %}
+
+{% block headerSection %}
+
+ <!-- Main hero unit for a primary marketing message or call to action -->
+  <div class="hero-unit">
+    <h1>Django Chameleon</h1>
+    <p>A django theme/template changer for you Django projects. Now the user can navigate through the page with the wanted skin!</p>
+    <div class="row show-grid">
+        <div class="span2">
+            <p><a class="btn btn-primary btn-large" href="https://github.com/slok/django-chameleon">I want the code &raquo;</a></p>
+        </div>
+        <div class="span3">
+            <p><a class="btn btn-primary btn-large disabled">I don't want the code &raquo;</a></p>
+        </div>
+    </div>
+  </div>
+{% endblock headerSection %}
+
+{% block mainSection %}
+
+ <div class="container">
+
+     
+
+      <!-- Example row of columns -->
+      <div class="row">
+        <div class="span4">
+          <h2>Loren</h2>
+           <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse eu tellus ac lectus pulvinar tempor. Duis 
+           elementum augue et orci faucibus fringilla. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis in lacinia purus. 
+           Maecenas ullamcorper gravida massa non scelerisque. Cras eu lectus in odio pellentesque sagittis et at enim. Maecenas suscipit 
+           malesuada mattis. Maecenas in consectetur ligula. </p>
+          <p><a class="btn" href="#">View details &raquo;</a></p>
+
+        </div>
+        <div class="span4">
+          <h2>Loren 2</h2>
+           <p>Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Integer a purus nulla. Vivamus 
+           commodo, diam vel semper porttitor, nisl arcu vulputate sapien, et malesuada orci erat non leo. Aliquam blandit leo et 
+           elit dignissim vehicula. Integer accumsan, nulla id molestie pretium, nisl ligula convallis metus, sed aliquet est orci 
+           ut risus. Sed euismod leo at leo scelerisque interdum eget ut dui. Mauris convallis gravida mauris, at vulputate diam 
+           sodales vel. Mauris et lobortis diam. Cras sit amet elit eu nisi vulputate feugiat et eu purus. Integer pharetra suscipit
+            augue, eu mattis nisi luctus vitae. Proin eros felis, lacinia eu ultrices vitae, sagittis sit amet erat. Etiam tempor 
+            auctor feugiat. Sed eget nisi erat. Nullam sit amet tortor semper purus consequat venenatis et et velit. </p>
+          <p><a class="btn" href="#">View details &raquo;</a></p>
+       </div>
+        <div class="span4">
+
+          <h2>Loren 3</h2>
+          <p>Aenean euismod tempor quam et congue. In sit amet orci sit amet lorem tempor consectetur ut quis turpis. Ut aliquet 
+          lorem augue. Nulla vitae sagittis turpis. Mauris vehicula consectetur magna, eu porta velit ultricies ac. Aliquam vitae 
+          sollicitudin justo. Ut semper vestibulum gravida. Donec pulvinar convallis elit vitae consequat. Class aptent taciti sociosqu 
+          ad litora torquent per conubia nostra, per inceptos himenaeos. Fusce consequat dignissim arcu in dignissim. Ut varius 
+          ligula quis diam pharetra aliquam. Etiam pharetra rutrum augue, id dapibus turpis vestibulum ut. Curabitur a erat leo. 
+          Nam non sodales purus. </p>
+          <p><a class="btn" href="#">View details &raquo;</a></p>
+        </div>
+      </div>
+
+{% endblock mainSection%}
+
+{% block footer %}
+{% endblock footer %}

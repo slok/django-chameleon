@@ -1,4 +1,5 @@
 import deploy
+import os
 from django.conf.global_settings import TEMPLATE_CONTEXT_PROCESSORS
 
 ###############################
@@ -22,20 +23,19 @@ TEMPLATE_CONTEXT_PROCESSORS += ('chameleon.context_processors.theme',)
 #CHAMELEON_COOKIE_KEY = ''
 
 # If you want to name the default theme different to 'default'
-CHAMELEON_DEFAULT_THEME = 'white'
+CHAMELEON_DEFAULT_THEME = 'bootstrap'
 
 # The themes and their paths(the path where the structure starts). 
 # The strucutre of the theme has to be the same as the default one.
 CHAMELEON_SITE_THEMES = {
-    'white':'white',
-    'green':'themes/green',
-    'black':'themes/black',
-    'blue': 'blue',
-    'red':'',
+    'bootstrap':'bootstrap',
+    'minimalist':'minimalist',
 }
 
 ##############################
 
+#Base dir of the project
+BASE_DIR = os.path.dirname(__file__)
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
@@ -106,6 +106,7 @@ ADMIN_MEDIA_PREFIX = '/static/admin/'
 
 # Additional locations of static files
 STATICFILES_DIRS = (
+      os.path.join(BASE_DIR, 'static/'),
     # Put strings here, like "/home/html/static" or "C:/www/django/static".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.

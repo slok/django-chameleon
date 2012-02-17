@@ -12,3 +12,17 @@ def index(request):
     
     #return render_to_response('index.html', data, context_instance=RequestContext(request))
     return TemplateResponse(request, 'index.html', data)
+
+def about(request, section):
+
+    actual_theme = utils.get_theme_from_cookie(request)
+    data = {
+        'form': forms.ColorForm(initial = {'theme' : actual_theme})
+    }
+    
+    if(section == 'chameleon'):
+        page = 'aboutChameleon.html'
+    elif(section == 'me'):
+        page = 'aboutMe.html'
+    
+    return TemplateResponse(request, page, data)

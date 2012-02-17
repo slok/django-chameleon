@@ -1,17 +1,11 @@
 from django.conf.urls.defaults import patterns, include, url
-
+from example import views
 # Uncomment the next two lines to enable the admin:
 # from django.contrib import admin
 # admin.autodiscover()
 
 urlpatterns = patterns('',
     # Examples:
-    url(r'^$', 'example.views.index'),
-    # url(r'^mysitetest/', include('mysitetest.foo.urls')),
-
-    # Uncomment the admin/doc line below to enable admin documentation:
-    # url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
-
-    # Uncomment the next line to enable the admin:
-    # url(r'^admin/', include(admin.site.urls)),
+    url(r'^$', views.index),
+    url(r'^about/(?P<section>[-\w]+)/$', views.about)
 )

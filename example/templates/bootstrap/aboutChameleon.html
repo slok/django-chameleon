@@ -1,0 +1,30 @@
+{% extends 'bootstrap/base.html'%}
+
+{% block navmenu %}
+    <li><a href="/">Home</a></li>
+    <li class="active"><a href="/about/chameleon">About chameleon</a></li>
+    <li><a href="/about/me">About Me</a></li>
+
+{% endblock navmenu %}
+
+{% block headerSection %}
+<header class="jumbotron subhead" id="overview">
+  <h1>Features</h1>
+  <p class="lead">Django chameleon features</p>
+</header>
+{% endblock headerSection %}
+
+{% block mainSection %}
+    <ul>
+        <li> Beta version <span class="label label-success">Done</span> </li>
+        <li> Refactor the source code <span class="label label-important">TODO</span> </li>
+        <li> Test with app themes <span class="label label-important">TODO</span> </li>
+        <li> Redo the documentation <span class="label label-important">TODO</span> </li>
+        <li> Make unit tests <span class="label label-warning">TODO</span> </li>
+        <li> Milestone <span class="label label-info">1.0</span> </li>
+    </ul>
+
+{% endblock mainSection%}
+
+{% block footer %}
+{% endblock footer %}

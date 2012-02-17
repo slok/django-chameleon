@@ -1,0 +1,57 @@
+<html>
+<head>
+    
+    <link href="{{STATIC_URL}}css/bootstrap.css" rel="stylesheet">
+    <style type="text/css">
+      body {
+        padding-top: 60px;
+        padding-bottom: 40px;
+        background-image:url('{{STATIC_URL}}img/bk_bootstrap.png');
+      }
+    </style>
+    <link rel="stylesheet" href="{{STATIC_URL}}css/bootstrap-responsive.css">
+</head>
+<body>
+     
+    <div class="navbar navbar-fixed-top">
+        <div class="navbar-inner">
+            <div class="container">
+                <a class="brand" href="https://github.com/slok/django-chameleon">Chameleon</a>
+                <div class="nav-collapse">
+                    <ul class="nav">
+                     {% block navmenu %} 
+                     {% endblock navmenu %}
+                     </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container">
+        {% block headerSection %}
+        {% endblock headerSection %}
+        {% block mainSection %}
+        {% endblock mainSection%}
+        <footer>
+            
+            <div class="row show-grid">
+                <div class="span3">
+                     <form name="form" action="." method="POST" enctype="multipart/form-data">{% csrf_token %}
+                        <p><div id="formContent">
+                        {{ form.as_p }}
+                        </div></p>
+                    </form>
+                </div>
+                <div class="span8">
+                        </br></br>
+                        <a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/">Creative Commons 3.0 by-sa </a> |
+                        <a href="http://www.djangoproject.com/">Made with Django</a> |
+                        2011 Xabier (slok) Larrakoetxea Gallego
+                        {% block footer %} {% endblock footer %}
+                </div>
+            </div>
+        </footer>
+
+
+    </div>
+</body>
+</html>
