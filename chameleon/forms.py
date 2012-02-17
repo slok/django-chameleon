@@ -1,7 +1,7 @@
 from django import forms
 import settings
 
-choices=[('default', 'default'),]
+choices=[]
 for k, v in settings.CHAMELEON_SITE_THEMES.items():
     choices.append((k,k))
 

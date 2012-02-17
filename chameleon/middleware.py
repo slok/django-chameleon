@@ -1,6 +1,7 @@
 import settings
 from chameleon import utils
 from django.core.exceptions import MiddlewareNotUsed
+from datetime import datetime
 
 class DetectTheme(object):
     """
@@ -10,8 +11,13 @@ class DetectTheme(object):
     
     
     def process_request(self, request):
-        utils._init_theme(request)
         
+        if settings.DEBUG:
+            date = datetime.today()
+            print('[' + date.strftime('%d/%b/%Y %X') + '] [CHAMELEON][DETECT_THEME MIDDLEWARE] Process request')
+            
+        #Init the variables
+        utils._init_theme(request)
         #get from POST and GET
         actual_theme = utils.get_theme_from_request(request)
         
@@ -33,6 +39,11 @@ class SetResponseTemplate(object):
     """
     
     def __init__(self):
+        
+        if settings.DEBUG:
+            date = datetime.today()
+            print('[' + date.strftime('%d/%b/%Y %X') + '] [CHAMELEON][SET_RESPONSE_TEMPLATE MIDDLEWARE] Init')
+        
         # Start the checks to stop this middleware (a.k.a don't change the theme!)
         # Note: Init method only is called when the web server starts
         
@@ -51,6 +62,10 @@ class SetResponseTemplate(object):
         
     
     def process_template_response(self, request, response):
+        
+        if settings.DEBUG:
+            date = datetime.today()
+            print('[' + date.strftime('%d/%b/%Y %X') + '] [CHAMELEON][SET_RESPONSE_TEMPLATE MIDDLEWARE] Process template response')
         
         # set the Context data. We don't need, the context_processors.py puts automatically
         #utils.set_theme_in_context(request, response)   

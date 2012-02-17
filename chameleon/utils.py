@@ -10,9 +10,13 @@ _local_thread = threading.local()
 # The local thread has 3 vars
 #   - request
 #   - keys
+#       * cookie theme key name
+#       * context theme key name
+#       * default theme
+#       * form name
 #   - theme
 #
-#The theme stores in this different places:
+# The theme stores in this different places:
 #   - Cookie (session)
 #   - Local thread
 #   - Request context
@@ -20,8 +24,9 @@ _local_thread = threading.local()
 
 def _init_theme(request):
     """
-    We need to access to some variables sometimes and we don't have so we
-    push them in the thread. Also we add some others for convenience
+        Add the necessary variables to the local thread
+        
+        :param request: The request object from Django
     """
     global _local_thread
     
@@ -29,23 +34,34 @@ def _init_theme(request):
     _local_thread.request = request
     #_local_thread.theme = None
     
+    # Check if is properly configured the default theme
+    def_theme = getattr(settings, 'CHAMELEON_DEFAULT_THEME')
+    if not def_theme:
+        raise ImproperlyConfigured('theme not found in CHAMELEON_SITE_THEMES')
+    
+    # Set the local thread variables
     keys = {
         'cookie': getattr(settings, 'CHAMELEON_COOKIE_KEY', 'theme'),
         'context': getattr(settings, 'CHAMELEON_CONTEXT_KEY', 'theme'),
-        'default_theme': getattr(settings, 'CHAMELEON_DEFAULT_THEME', 'default'),
+        'default_theme': def_theme,
         'form': getattr(settings, 'CHAMELEON_FORM_KEY', 'theme'),
         }
-
     _local_thread.keys = keys
     
     if settings.DEBUG:
         date = datetime.today()
-        print('[' + date.strftime('%d/%b/%Y %X') + '] [CHAMELEON] Thread local variables initiated' )
+        print('[' + date.strftime('%d/%b/%Y %X') + '] [CHAMELEON] Thread local variables setted' )
 
 def get_theme_from_cookie(request = None):
     """
         Gets the Theme from the session/cookie variable
+        
+        :param request: The request object from Django. Default is None
     """
+
+    if settings.DEBUG:
+        date = datetime.today()
+        print('[' + date.strftime('%d/%b/%Y %X') + '] [CHAMELEON] Get theme from cookie')
 
     #if we want the theme and we don't have the request, use the local thread data
     if not request:
@@ -56,42 +72,44 @@ def get_theme_from_cookie(request = None):
 
 def get_theme_from_request(request):
     """
-        gets the site theme from the GET or POST request
+        Gets the site theme from the GET or POST request
         If there is no value then returns None (So there is no change request)
+        
+        :param request: The request object from Django
     """
     
     selected_theme=None
     
     theme_var = _local_thread.keys['form']
+    request_type = None
     
     #Check if is a request
     if request:
         # Check if there is in POST or HEAD a change theme request
         if request.POST.get(theme_var):
             selected_theme = request.POST.get(theme_var)
+            request_POST = 'POST'
         elif request.GET.get(theme_var): 
             selected_theme = request.GET.get(theme_var)
-    
+            request_POST = 'GET'
+	
+        if settings.DEBUG:
+            date = datetime.today()
+            if not request_type:
+                print('[' + date.strftime('%d/%b/%Y %X') + '] [CHAMELEON] No request')
+            else:
+                print('[' + date.strftime('%d/%b/%Y %X') + '] [CHAMELEON] Theme '+ selected_theme +' retrieved from ' + request_type + ' request')
+            
+                
     return selected_theme
-"""
-def set_theme_in_local_thread(theme=None):
-    global  _local_thread
-    
-    #If not theme then get from the cookie
-    if not theme:
-        theme = get_theme_from_cookie(_local_thread.request)
-   
-    _local_thread.theme =  theme
-    if settings.DEBUG:
-        date = datetime.today()
-        print('[' + date.strftime('%d/%b/%Y %X') + '] [CHAMELEON] Local thread variable setted to: ' + theme)
-"""
 
 def set_theme_in_cookie(request, theme):
     """
         Sets the key(variable) that we decided (or the default one) in the session
-        cookie, if there is no value, the cookie will be 'default' and means that 
-        the default theme is going to be used
+        cookie, if there is no value, the cookie will be the default theme
+        
+        :param request: Request object from Django
+        :param theme: the theme to set in the session cookie
     """
     
     cookie_theme = get_theme_from_cookie(request)
@@ -133,6 +151,9 @@ def get_theme_path(theme):
     """
         returns the theme path of a given theme (retrieves from settings)
     """
+    
+    #TODO: multiple theme paths (/templates, /templates/other ...)
+    
     t_path = ''
     
     try:
@@ -154,37 +175,11 @@ def get_theme_path(theme):
         t_path += '/' #put the last slash
     else:
         if settings.DEBUG and theme != _local_thread.keys['default_theme']: #shhhhhh... silence
-            raise ImproperlyConfigured('theme not found in CHAMELEON_SITE_THEMES')
+            raise ImproperlyConfigured('theme '+ theme +' not found in CHAMELEON_SITE_THEMES')
         else:
             pass
 
     return t_path
-
-def cut_theme_path_level(templatePath, level):
-    """
-        Cuts the path level with the integer that is passed to the function. For example:
-        /f1/f2/f3/xxx with cut leve 1 is /f2/f3/xxx
-    """
-    split_path = templatePath.split('/')
-    split_path.pop(0) #the first one is empty because the string starts with '/' so we removed from list
-    #if the level is equal or higher than the path then exception
-    if len(split_path) > level:
-        #remove levels
-        for i in range(level):
-            split_path.pop(0)
-        
-        #create the new path with the remain levels of the path
-        if len(split_path) == 1:
-            final_path = split_path.pop(0)
-        else:
-            final_path = ''
-            for i in split_path:
-                final_path = final_path + '/' + i
-        
-        return final_path
-         
-    elif settings.DEBUG: #shhhhhh... silence
-        raise ImproperlyConfigured('Your cut level in "DEFAULT_LEVEL_CUT" is higher or equal than the path levels')
         
 def set_template_in_response(request, response):
     """
@@ -194,27 +189,15 @@ def set_template_in_response(request, response):
     
     #get the actual template and modify to get the new path
     actual_theme = response.template_name
-    cookie_theme = get_theme_from_cookie(request)
+    cookie_theme = get_theme_from_cookie()
+                
+    new_template = get_theme_path(cookie_theme) + actual_theme
+    #set the new template to the response
+    response.resolve_template(new_template) # template exception if the template doesnt exist
+    response.template_name = new_template
     
-    #if there is no theme or is the default one, dont do anything
-    if cookie_theme or cookie_theme != _local_thread.keys['default_theme']:
-    
-        #cut the levels of the default theme (if necessary)
-        try:
-            cut_level = getattr(settings, 'DEFAULT_LEVEL_CUT')
-            if cut_level > 0:
-                actual_theme = cut_theme_path_level(actual_theme, cut_level)
-        except AttributeError:
-            pass
-        
-        new_template = get_theme_path(cookie_theme) + actual_theme
-        #set the new template to the response
-        response.resolve_template(new_template) # template exception if the template doesnt exist
-        response.template_name = new_template
-        
-        if settings.DEBUG:
-            date = datetime.today()
-            print('[' + date.strftime('%d/%b/%Y %X') + '] [CHAMELEON] theme template changed to: ' + new_template)
-    
+    if settings.DEBUG:
+        date = datetime.today()
+        print('[' + date.strftime('%d/%b/%Y %X') + '] [CHAMELEON] template updated to: ' + new_template)
     
     return response

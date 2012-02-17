@@ -68,13 +68,7 @@ class Loader(BaseLoader):
             try:
                 return loader_class.load_template(new_template_name, template_dirs)
             except TemplateDoesNotExist:
-                #if the commons fail, use the default theme automatically
-                try:
-                    return loader_class.load_template(template_name, template_dirs)
-                except:
-                    pass
-        
-        raise TemplateDoesNotExist("Tried %s" % template_name)
+                raise TemplateDoesNotExist("Tried %s" % template_name)
 
         
     def load_template_source(self, template_name, template_dirs=None):
@@ -92,10 +86,4 @@ class Loader(BaseLoader):
                 try:
                     return loader_class.load_template_source(new_template_name, template_dirs)
                 except TemplateDoesNotExist:
-                    #if the commons fail, use the default theme automatically
-                    try:
-                        return loader_class.load_template(template_name, template_dirs)
-                    except:
-                        pass
-                        
-        raise TemplateDoesNotExist("Tried %s" % template_name)
+                    raise TemplateDoesNotExist("Tried %s" % template_name)
