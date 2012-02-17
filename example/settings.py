@@ -29,7 +29,7 @@ CHAMELEON_DEFAULT_THEME = 'bootstrap'
 # The strucutre of the theme has to be the same as the default one.
 CHAMELEON_SITE_THEMES = {
     'bootstrap':'bootstrap',
-    'minimalist':'minimalist',
+    'minimalism':'minimalism',
 }
 
 ##############################

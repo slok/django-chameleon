@@ -1,0 +1,73 @@
+﻿<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Minimalism - Home</title>
+
+<style type="text/css">
+      .logo {
+        color: #CC3333;
+      }
+    </style>
+
+<link rel="stylesheet" href="{{STATIC_URL}}css/minimalism/styles.css">
+</head>
+<body>
+   <div class="bg">
+    <!--start container-->
+    <div id="container">
+    <!--start header-->
+    <header>
+      <!--start logo-->
+      <a href="https://github.com/slok/django-chameleon" id="logo"><h1 class="logo"><b>Chameleon</b></h1></a>   
+      <!--end logo-->
+      <!--start menu-->
+  	   <nav>
+         <ul>
+          {% block navmenu %} 
+             <li><a href="/" class="current">Home</a></li>
+             <li><a href="/about/chameleon">About chameleon</a></li>
+             <li><a href="/about/me">About me</a></li>
+         {% endblock navmenu %}
+         </ul>
+      </nav>
+  	   <!--end menu-->
+      <!--end header-->
+	</header>
+   <!--start intro-->
+   <section id="intro">
+    {% block headerSection %}
+
+    {% endblock headerSection %}
+
+   </section>
+   <!--end intro-->
+   <!--start holder-->
+   <div class="holder_content">
+    {% block mainSection %}
+
+  {% endblock mainSection%}
+  </div>
+   </div>
+   <!--end container-->
+   
+   <!--start footer-->
+   <footer>
+    <form name="form" action="." method="POST" enctype="multipart/form-data">{% csrf_token %}
+        <p><div id="formContent">
+        {{ form.as_p }}
+        </div></p>
+    </form>
+      <div class="container">  
+         <div id="FooterTwo"> <a href="http://freehtml5templates.com/"> © 2011 Minimalism [freehtml5templates] </a></div>
+         <div id="FooterTree"> Valid html5, design and code by <a href="http://www.marijazaric.com">marija zaric - creative simplicity</a> </div> 
+        
+         {% block footer %} {% endblock footer %}
+      </div>
+   </footer>
+   <!--end footer-->
+   </div>
+   <!--end bg-->
+   <!-- Free template distributed by http://freehtml5templates.com -->
+  </body>
+</html>
