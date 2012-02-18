@@ -1,0 +1,22 @@
+{% extends 'minimalism/exampleApp/exampleApp.html'%}
+
+{% block navmenu %}
+    <li><a href="/exampleapp">ExampleApp</a></li>
+    <li><a href="/exampleapp/system/info" class="current">System info</a></li>
+{% endblock navmenu %} 
+
+{% block headerSection %}
+
+{% endblock headerSection %}
+
+{% block mainSection %}
+
+<ul>
+    <li> Path: {{path}} </li>
+    <li> Modules: {{modules}}  </li>
+    <li> System: {{system}}  </li>
+    <li> Prefix: {{prefix}}  </li>
+    <li> Python Version: {{version}}  </li>
+    <li> Python Copyright: {{python_legal}} </li>
+</ul>
+{% endblock mainSection %}
