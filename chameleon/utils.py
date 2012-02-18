@@ -23,10 +23,9 @@ _local_thread = threading.local()
 #
 
 def _init_theme(request):
-    """
-        Add the necessary variables to the local thread
+    """Add the necessary variables to the local thread
         
-        :param request: The request object from Django
+    :param request: The request object from Django
     """
     global _local_thread
     
@@ -53,10 +52,9 @@ def _init_theme(request):
         print('[' + date.strftime('%d/%b/%Y %X') + '] [CHAMELEON] Thread local variables setted' )
 
 def get_theme_from_cookie(request = None):
-    """
-        Gets the Theme from the session/cookie variable
+    """Gets the Theme from the session/cookie variable
         
-        :param request: The request object from Django. Default is None
+    :param request: The request object from Django. Default is None
     """
 
     if settings.DEBUG:
@@ -71,11 +69,10 @@ def get_theme_from_cookie(request = None):
     
 
 def get_theme_from_request(request):
-    """
-        Gets the site theme from the GET or POST request
-        If there is no value then returns None (So there is no change request)
+    """Gets the site theme from the GET or POST request If there is no 
+    value then returns None (So there is no change request)
         
-        :param request: The request object from Django
+    :param request: The request object from Django
     """
     
     selected_theme=None
@@ -104,12 +101,12 @@ def get_theme_from_request(request):
     return selected_theme
 
 def set_theme_in_cookie(request, theme):
-    """
-        Sets the key(variable) that we decided (or the default one) in the session
-        cookie, if there is no value, the cookie will be the default theme
+    """Sets the key(variable) that we decided (or the default one) in 
+    the session cookie, if there is no value, the cookie will be the 
+    default theme
         
-        :param request: Request object from Django
-        :param theme: the theme to set in the session cookie
+    :param request: Request object from Django
+    :param theme: the theme to set in the session cookie
     """
     
     cookie_theme = get_theme_from_cookie(request)
@@ -132,8 +129,10 @@ def set_theme_in_cookie(request, theme):
 
 
 def set_theme_in_context(request, response):
-    """
-        Sets the theme in the context variable inside the response object
+    """Sets the theme in the context variable inside the response object
+    
+    :param request: Request object from Django
+    :param response: Response object from Django
     """
     
     #create the context data and set the theme variable
@@ -148,8 +147,9 @@ def set_theme_in_context(request, response):
     
     
 def get_theme_path(theme):
-    """
-        returns the theme path of a given theme (retrieves from settings)
+    """returns the theme path of a given theme (retrieves from settings)
+    
+    :param theme: the theme name of the theme path we are looking for
     """
     
     #TODO: multiple theme paths (/templates, /templates/other ...)
@@ -182,9 +182,12 @@ def get_theme_path(theme):
     return t_path
         
 def set_template_in_response(request, response):
-    """
-        Sets the new template to a SimpleTemplateResponse or TemplateResponse
-        Needs 1.3 and the use of the commented objects in the views
+    """Sets the new template to a SimpleTemplateResponse or 
+    TemplateResponse needs 1.3 and the use of the commented objects in 
+    the views
+    
+    :param request: Request object from Django
+    :param response: Response object from Django
     """
     
     #get the actual template and modify to get the new path
