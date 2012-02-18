@@ -125,22 +125,22 @@ def set_theme_in_cookie(request, theme):
             print('[' + date.strftime('%d/%b/%Y %X') + '] [CHAMELEON] Cookie setted to: ' + theme)
 
 
-def set_theme_in_context(request, response):
-    """Sets the theme in the context variable inside the response object
-    
-    :param request: Request object from Django
-    :param response: Response object from Django
-    """
-    
-    #create the context data and set the theme variable
-    request_context = response.resolve_context(response.context_data)
-    request_context[_local_thread.keys['context']] = get_theme_from_cookie(request)
-    
-    response.context_data = request_context
-    
-    if settings.DEBUG:
-        date = datetime.today()
-        print('[' + date.strftime('%d/%b/%Y %X') + '] [CHAMELEON] Added theme to context data')
+#def set_theme_in_context(request, response):
+#    """Sets the theme in the context variable inside the response object
+#    
+#    :param request: Request object from Django
+#    :param response: Response object from Django
+#    """
+#    
+#    #create the context data and set the theme variable
+#    request_context = response.resolve_context(response.context_data)
+#    request_context[_local_thread.keys['context']] = get_theme_from_cookie(request)
+#    
+#    response.context_data = request_context
+#    
+#    if settings.DEBUG:
+#        date = datetime.today()
+#        print('[' + date.strftime('%d/%b/%Y %X') + '] [CHAMELEON] Added theme to context data')
     
     
 def get_theme_path(theme):
