@@ -1,29 +1,35 @@
 Chameleon
 =========
 
-**documentation at: [readTheDocs](http://readthedocs.org/docs/django-chameleon/)**
+**[Update needed] documentation at: [readTheDocs](http://readthedocs.org/docs/django-chameleon/)**
 
 Description
 -----------
 
-Django Chameleon is a dinamic theme (template) changer  for the Django projects. 
+Django Chameleon is a dynamic theme (template) changer  for the Django projects. Sometimes a user wants to select the best theme
+to read or navigate throug a webpage. Some users like dark backgrounds and light letters, othres prefer minimalistic web pages...
+With Django chameleon you have the chance to bring all the themes you want to yout webpage
 
 Dependencies
 ------------
 * Django >= 1.2 [if we use the loader method]
 * Django >= 1.3 [if we use the `TemplateResponse` method]
 * Python >= 2.4 (I think, I use 2.6)
-* Session middleware (I think that is necessary to save the satatus of the theme)
+* Session middleware
+* Session storage (database, filesystem...)
 * RequestContext [OPTIONAL] but recommended
 
 How it works
 ------------
 
-Chameleon gets the theme from the POST or GET request, then inserts in the session and the request context. You can set and get the theme in the cookie with some methods that are in `chameleon.utils`
+Chameleon gets the theme from the POST or GET request, then inserts in the session and the request context. You can set and get the 
+theme in the cookie with some methods that are in `chameleon.utils`
 
-Chameleon supports the theme change in two ways. With a loader or using the new [`TemplateResponse`](https://docs.djangoproject.com/en/1.3/ref/template-response/) instead of `HttpResponse` (`render_to_response`...) 
-this has been added in **Django 1.3**. For example a view that uses this new feature 
-(doesn't change the previous functionality) only manages the response in a different way that the middleware can interact
+Chameleon supports the theme change in two ways. With a loader or using the new 
+[`TemplateResponse`](https://docs.djangoproject.com/en/1.3/ref/template-response/) instead of `HttpResponse` (`render_to_response`...) 
+this has been added in **Django 1.3**. 
+
+For example a view that uses this new feature only manages the response in a different way, with this method the middleware can interact
 with the response before rendering. This is an example
 
     #from django.shortcuts import render_to_response
@@ -37,81 +43,94 @@ with the response before rendering. This is an example
         return TemplateResponse(request, 'index.html', {'form': ColorForm()})
 
 
-In my opinion I recomend using `TemplateResponse` to not mess with the default Django loaders, or any other custom loaders.
+Is recomended using `TemplateResponse` to not mess with the default Django loaders, or any other custom loaders.
 
-###Settings template structure###
+Settings template structure
+---------------------------
 
 **THE THEMES (TEMPLATES) NEED TO HAVE THE SAME STRUCTURE AS IN THE DEFAULT THEME.** 
 
-For example we have a basic structure inside `templates` (the root where django will search for the templates).
-In the root there are `base.html` and `index.html`. `index.html` extends from `base.html` and in the views the template to render is `index.html`.
-So we add other themes, **red**, **blue**, **green** and **black**. These themes the only requeriment that need is to have is `index.html` because is the one that 
-is rendered from the view. If all the themes want to extend from the same base.html they could. Also they could extend from an individual base.html but 
-this has to be put in the template, for example in the blue one the extend from `/templates/blue/base.html` is: `{% extends 'blue/base.html' %}`  
+The template structure in the porject using Django chameleon, can be cmplex or simple. 
 
-As we can see all the templates have the same structure. default is in `templates`, blue and red are in `templates/xxxx`, and green and black are  `templates/themes/xxxx` **but always the same structure of templates**
+*All the templates need to have identical struncture*
 
+The themes are placed in the root folder of our template folders, normally `templates`. Django chameleon only manages final templates,
+this means that only manages the templates that are asked from the views, the "extend" templates inside the html webpages has to be 
+manage by the user.
 
-    Templates
+This has pros and cons. The cons is that isn't managed automatically, the pros is that if all the themes placed in subfolders inside the root folder of the templates
+want to extend from base.html (in the root folder) they can. For example two themes that extend from the same html:
+
+    templates
     │ 
     ├── base.html
-    ├── index.html
-    ├── red
-    │   ├── [base.html] 
+    │
+    ├── bootstrap
     │   └── index.html
     │ 
-    ├── blue
-    │   ├── [base.html] 
-    │   └── index.html
+    └── minimalism
+        └── index.html
+
+
+Django chameleon also supports templates in apps the same way that supports the templates in the main level. 
+The apps templates can extend from root templates htmls. 
+
+For example we have the blog app:
+
+    djangoProject
+    │ 
+    ├─ settings.py
+    ├─ urls.py
+    ├─ ...
     │
-    └── themes
-        ├── black
-        │   ├── [base.html] 
-        │   └── index.html
+    ├─ blog
+    │   ├─ settings.py
+    │   ├─ urls.py
+    │   ├─ ...
+    │   └─ templates
+    │       │
+    │       ├── bootstrap
+    │       │   └─ blogTemplates
+    │       │       └── blog_index.html
+    │       │ 
+    │       └── minimalistic
+    │           └─ blogTemplates
+    │               └── blog_index.html
+    │
+    └─templates
+        │ 
+        ├── base.html
         │
-        └── green
-            ├── [base.html] 
+        ├── bootstrap
+        │   └── index.html
+        │ 
+        └── minimalism
             └── index.html
 
 
-###Settings variables###
+Getting started!
+----------------
 
-There are some vars that can be set in `settings.py`. `TEMPLATE_CONTEXT_PROCESSOR` and `CHAMELEON_SITE_THEMES` are neccesary, the others are optional. For example:
+To set up django chameleon we need to set up various things. The first one is the 
+conext processor. In settings.py we set this
 
     from django.conf.global_settings import TEMPLATE_CONTEXT_PROCESSORS
     
     TEMPLATE_CONTEXT_PROCESSORS += ('chameleon.context_processors.theme',)
 
-    # Django settings for chameleonTest project.
+Next we need to set up the needded variables for Chameleon
 
-    # [OPTIONAL] If you want to manage the theme change looking in your templates  manually 
-    # with the request context var. Put down this flag
-    #CHAMELEON_AUTOMATED = True
-
-    # [OPTIONAL] If you want to name the form var in a different name
-    #CHAMELEON_FORM_KEY = ''
-
-    # [OPTIONAL] If you want to name the default theme different to 'default'
-    #CHAMELEON_DEFAULT_THEME = ''
-
-    # [OPTIONAL] If you want to change the var name in the context, set this
-    #CHAMELEON_CONTEXT_KEY = ''
-
-    # [OPTIONAL] If you want to change the var name in the cookie set this
-    #CHAMELEON_COOKIE_KEY = ''
-
+    # If you want to name the default theme different to 'default'
+    CHAMELEON_DEFAULT_THEME = 'bootstrap'
 
     # The themes and their paths(the path where the structure starts). 
-    # The structure of the theme has to be the same as the default one.
-    # If a empty then the name of the theme will be the folder to search in  
+    # The strucutre of the theme has to be the same as the default one.
     CHAMELEON_SITE_THEMES = {
-        'green':'themes/green',
-        'black':'themes/black',
-        'blue': 'blue',
-        'red':'',
+        'bootstrap':'bootstrap',
+        'minimal':'minimalism',
     }
-    
-###Add chameleon to installed apps###
+
+
 In settings add chameleon to `INSTALLED_APPS`, for example: 
     
     INSTALLED_APPS = (
@@ -122,18 +141,60 @@ In settings add chameleon to `INSTALLED_APPS`, for example:
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'chameleon',
-    
-###Add middleware###
-Add both middlewares to `MIDDLEWARE_CLASSES` (the second one is only for the TemplateResponse method, but if loader is activated in `TEMPLATE_LOADERS` the SetResponseTemplate middleware disables automatically)
+
+
+Now we need to select wich method want to use fro Chameleon. Could be 
+middleware (recommended) or loader
+
+###Middleware method###
+If middleware is selected add to `MIDDLEWARE_CLASSES` 
+(the second one is only for the TemplateResponse method,
+but if loader is activated in `TEMPLATE_LOADERS` the SetResponseTemplate
+ middleware disables automatically)
 
     'chameleon.middleware.DetectTheme',
     'chameleon.middleware.SetResponseTemplate',
 
-###Select method. `loader` or `TemplateResponse`###
 
-We have to select the method between Loader and TemplateResponse(Recommended)
+With the middleware method we need to manage our views in a different way (not much trouble ;D)
 
-####Loader####
+For example, normally we can do:
+
+    from django.shortcuts import render_to_response
+    from django.template import RequestContext
+    from chameleon import utils, forms
+
+    def index(request):
+
+        actual_theme = utils.get_theme_from_cookie(request)
+        data = {
+            'form': forms.ColorForm(initial = {'theme' : actual_theme})
+        }
+        
+        return render_to_response('index.html', data, context_instance=RequestContext(request))
+
+But now we need to use the templateResponse method. So we do this way:
+
+
+    from django.template.response import TemplateResponse
+    from chameleon import utils, forms
+
+    def index(request):
+
+        actual_theme = utils.get_theme_from_cookie(request)
+        data = {
+            'form': forms.ColorForm(initial = {'theme' : actual_theme})
+        }
+        
+        return TemplateResponse(request, 'index.html', data)
+
+###Loader method###
+We need to add a middleware (yes I know...the other 
+method is the middleware method ¬¬. But the loader needs to detect the 
+theme so needs one middleware too, not two). Add to `MIDDLEWARE_CLASSES`
+
+    'chameleon.middleware.DetectTheme',
+
 
 Add our loader to settings (**the first one**) for example:
 
@@ -144,25 +205,17 @@ Add our loader to settings (**the first one**) for example:
         'django.template.loaders.app_directories.Loader',
 
 
-####TemplateResponse####
-
-* We **don't** have to add the loader to `TEMPLATE_LOADERS` 
-* All the views have to call the template with TemplateResponse (or SimpleTemplateResponse)
-
-
-
-###Other###
-
-If you want that the default option of the form (theme choice) renders the theme that currently is activated you have to use `chameleon.utils` methods like is in the example(`views.py`). The example shows how to use the app with a basic example
 
 Current status
 --------------
 
-* Initial state
-* Basic functionality
-* No installer
-* Not many tests
-* Many bugs :D
+* Beta release near alpha (testing)
+* Milestone: 1.0 (stable release)
+* Two ways of using it
+* Installer (redo)
+* No test
+* Example
+* Bugs :D
 
 License
 -------
