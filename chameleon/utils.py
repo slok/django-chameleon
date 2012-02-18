@@ -29,10 +29,6 @@ def _init_theme(request):
     """
     global _local_thread
     
-    _local_thread = threading.local()
-    _local_thread.request = request
-    #_local_thread.theme = None
-    
     # Check if is properly configured the default theme
     def_theme = getattr(settings, 'CHAMELEON_DEFAULT_THEME')
     if not def_theme:
@@ -45,7 +41,9 @@ def _init_theme(request):
         'default_theme': def_theme,
         'form': getattr(settings, 'CHAMELEON_FORM_KEY', 'theme'),
         }
+        
     _local_thread.keys = keys
+    _local_thread.request = request
     
     if settings.DEBUG:
         date = datetime.today()
@@ -69,16 +67,15 @@ def get_theme_from_cookie(request = None):
     
 
 def get_theme_from_request(request):
-    """Gets the site theme from the GET or POST request If there is no 
+    """Gets the site theme from the GET or POST request. If there is no 
     value then returns None (So there is no change request)
         
     :param request: The request object from Django
     """
     
     selected_theme=None
-    
-    theme_var = _local_thread.keys['form']
     request_type = None
+    theme_var = _local_thread.keys['form']
     
     #Check if is a request
     if request:
@@ -147,54 +144,48 @@ def set_theme_in_context(request, response):
     
     
 def get_theme_path(theme):
-    """returns the theme path of a given theme (retrieves from settings)
+    """returns the full theme path of a given theme
     
     :param theme: the theme name of the theme path we are looking for
     """
     
-    #TODO: multiple theme paths (/templates, /templates/other ...)
-    
     t_path = ''
     
+    # Check if is properly configured
     try:
         themes_paths = getattr(settings, 'CHAMELEON_SITE_THEMES')
     except AttributeError: 
-        if settings.DEBUG: #shhhhhh... silence
+        if settings.DEBUG: 
             raise ImproperlyConfigured('You must specify the themes paths in CHAMELEON_SITE_THEMES in your settings file')
-        else:
-            pass
    
-   #check if there is the theme, if there isn't then use the default one ;)
+    #check if there is the theme
     if theme in themes_paths:
-        #If the path is void then use the name of the theme like root folder of the theme
+        # If the path is void, that means that is in the root folder
         if not themes_paths[theme]:
-            t_path = theme 
+            t_path = ''
         else:
             t_path = themes_paths[theme]
 
         t_path += '/' #put the last slash
     else:
-        if settings.DEBUG and theme != _local_thread.keys['default_theme']: #shhhhhh... silence
+        if settings.DEBUG and theme != _local_thread.keys['default_theme']:
             raise ImproperlyConfigured('theme '+ theme +' not found in CHAMELEON_SITE_THEMES')
-        else:
-            pass
 
     return t_path
         
 def set_template_in_response(request, response):
     """Sets the new template to a SimpleTemplateResponse or 
-    TemplateResponse needs 1.3 and the use of the commented objects in 
-    the views
+    TemplateResponse needs 1.3
     
     :param request: Request object from Django
     :param response: Response object from Django
     """
     
     #get the actual template and modify to get the new path
-    actual_theme = response.template_name
+    actual_template = response.template_name
     cookie_theme = get_theme_from_cookie()
-                
-    new_template = get_theme_path(cookie_theme) + actual_theme
+    new_template = get_theme_path(cookie_theme) + actual_template
+    
     #set the new template to the response
     response.resolve_template(new_template) # template exception if the template doesnt exist
     response.template_name = new_template
