@@ -1,5 +1,6 @@
 from django.template.loader import BaseLoader
 from django.template import TemplateDoesNotExist 
+from datetime import datetime
 import utils
 import settings
 
@@ -33,6 +34,10 @@ class Loader(BaseLoader):
         self.template_source_loaders = tuple(loaders)
         #super(BaseLoader, self).__init__(*args, **kwargs)
         
+        if settings.DEBUG:
+            date = datetime.today()
+            print('[' + date.strftime('%d/%b/%Y %X') + '] [CHAMELEON][LOADER] Call __init__')
+        
 
     def prepare_template_path(self, template_name):
         """
@@ -40,15 +45,14 @@ class Loader(BaseLoader):
         """
         actual_theme = utils.get_theme_from_cookie()
         
-        #cut the levels of the default theme (if necessary)
-        try:
-            cut_level = getattr(settings, 'DEFAULT_LEVEL_CUT')
-            if cut_level > 0:
-                template_name = utils.cut_theme_path_level(template_name, cut_level)
-        except AttributeError:
-            pass
-        
         path =  utils.get_theme_path(actual_theme) + template_name
+        
+        if settings.DEBUG:
+            date = datetime.today()
+            print('[' + date.strftime('%d/%b/%Y %X') + '] [CHAMELEON][LOADER] Call prepare_template_path: '+ path)
+            print('[' + date.strftime('%d/%b/%Y %X') + '] [CHAMELEON][LOADER] Call prepare_template_path: '+ actual_theme)
+            print('[' + date.strftime('%d/%b/%Y %X') + '] [CHAMELEON][LOADER] Call prepare_template_path: '+ template_name)
+        
         return path
 
     def load_template(self, template_name, template_dirs=None):
@@ -56,12 +60,16 @@ class Loader(BaseLoader):
         #And the last one if returns something doesn't do the raise son this way we know if none of the loaders has found 
         #the template when the final raise executes
         
+        if settings.DEBUG:
+            date = datetime.today()
+            print('[' + date.strftime('%d/%b/%Y %X') + '] [CHAMELEON][LOADER] Call load_template')
+        
         #check if we have automated mode 
         if getattr(settings, 'CHAMELEON_AUTOMATED', True):
             new_template_name = self.prepare_template_path(template_name)
         else:
             new_template_name = template_name
-            
+        print(new_template_name)
         for loader in self.template_source_loaders:
             class_import = import_class_from_str(loader)
             loader_class = class_import()
@@ -73,6 +81,11 @@ class Loader(BaseLoader):
         
     def load_template_source(self, template_name, template_dirs=None):
         #similar to load_template
+        
+        if settings.DEBUG:
+            date = datetime.today()
+            print('[' + date.strftime('%d/%b/%Y %X') + '] [CHAMELEON][LOADER] Call load_template_source')
+        
         #check if we have automated mode 
         if getattr(settings, 'CHAMELEON_AUTOMATED', True):
             new_template_name = self.prepare_template_path(template_name)
