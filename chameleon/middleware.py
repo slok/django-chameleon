@@ -1,4 +1,4 @@
-import settings
+from django.conf import settings
 from chameleon import utils
 from django.core.exceptions import MiddlewareNotUsed
 

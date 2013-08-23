@@ -1,7 +1,7 @@
 from django.template.loader import BaseLoader
-from django.template import TemplateDoesNotExist 
+from django.template import TemplateDoesNotExist
 import utils
-import settings
+from django.conf import settings
 
 def import_class_from_str(str_module):
     """

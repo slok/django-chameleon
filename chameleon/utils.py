@@ -1,4 +1,4 @@
-import settings
+from django.conf import settings
 import threading
 from datetime import datetime
 from django.contrib.sessions.models import Session
