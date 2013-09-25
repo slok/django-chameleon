@@ -1,5 +1,5 @@
 from django import forms
-import settings
+from django.conf import settings
 
 choices=[('default', 'default'),]
 for k, v in settings.CHAMELEON_SITE_THEMES.items():
